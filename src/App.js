@@ -4,6 +4,7 @@ import PomodoroInfo from './components/PomodoroInfo';
 import LoadingScreen from './components/LoadingScreen';
 import StatsScreen from './components/StatsScreen';
 import ConfigModal from './components/ConfigModal';
+import BluetoothModal from './components/BluetoothModal';
 
 const App = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -46,7 +47,7 @@ const App = () => {
   useEffect(() => {
     const fetchTimes = async () => {
       try {
-        const response = await fetch('http://localhost:3001/api/getWorkTime');
+        const response = await fetch('http://localhost:3000/api/pomodoro/work-time');
         const data = await response.json();
         setServerWorkTime(data.workTime);
         setServerBreakTime(data.breakTime);
@@ -143,6 +144,10 @@ const App = () => {
     setShowConfig(false);
   };
 
+  const handleConnectESP32 = () => {
+    setShowBluetooth(true);
+  };
+
 
   // Timer control functions
   const toggleTimer = () => {
@@ -215,7 +220,7 @@ const App = () => {
             breakTime={breakTime}
             onComplete={handlePomodoroComplete}
             onConfigClick={() => setShowConfig(true)}
-            onConnectESP32={() => setShowBluetooth(true)}
+            onConnectESP32={handleConnectESP32}
             // Timer state
             minutes={timerMinutes}
             seconds={timerSeconds}
@@ -261,6 +266,13 @@ const App = () => {
           workTime={workTime}
           onSave={handleSaveConfig}
           onClose={() => setShowConfig(false)}
+        />
+      )}
+
+      {showBluetooth && (
+        <BluetoothModal 
+          isOpen={showBluetooth} 
+          onClose={() => setShowBluetooth(false)} 
         />
       )}
     </div>
